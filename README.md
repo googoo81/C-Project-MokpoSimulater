@@ -1,4 +1,5 @@
-# MokpoSimulater_CProject
+# C-Project-MokpoSimulater
+
 C_Project_Mokpo_Simulater <br>
 C언어 프로젝트를 만들예정 <br> 
 참여자 : 계찬정(eggfry313), 송현우(googoo81) <br>
