@@ -31,11 +31,13 @@ int squidX;
 int seaGullX;
 int crabX;
 int boosterX;
+int shieldX;
 int score;
 int keycontrol;
 int trapvalue;
 
 int ownBooster = false;
+int ownShield = false;
 
 void consolesize();
 int isCollision(const int seaGullX, const int squidX, const int fishX, const int dinoY);

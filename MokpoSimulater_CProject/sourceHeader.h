@@ -30,15 +30,18 @@ enum ColorType {
 #define FISH_BOTTOM_X 85
 #define SQUID_BOTTOM_Y 24
 #define SQUID_BOTTOM_X 85
-#define SEAGULL_BOTTOM_Y 10
+#define SEAGULL_BOTTOM_Y 12
 #define SEAGULL_BOTTOM_X 85
 #define CRAB_BOTTOM_Y 46
 #define CRAB_BOTTOM_X 85
 #define BOOSTER_BOTTOM_Y 46
 #define BOOSTER_BOTTOM_X 85
+#define SHIELD_BOTTOM_Y 46
+#define SHIELD_BOTTOM_X 85
+
 
 void consolesize();
-int isCollision(const int boosterX, const int crabX, const int seaGullX, const int squidX, const int fishX, const int whaleY);
+int isCollision(const int shieldX, const int boosterX, const int crabX, const int seaGullX, const int squidX, const int fishX, const int whaleY);
 void drawgameover(int score);
 void GotXY(int x, int y);
 void drawwhale(int whaleY);
@@ -48,6 +51,7 @@ void squiddraw(int squidX);
 void seaGulldraw(int);
 void boosterDraw(int);
 void crabDraw(int);
+void shielddraw(int);
 void itemBox();
 void gotoXY(int, int);
 int Getkeydown(int vkey) {
@@ -70,6 +74,7 @@ void play() {
 	isTop = true;
 
 	ownBooster = false;
+	ownShield = false;
 
 	whaleY = WHALE_BOTTOM_Y;
 	fishX = FISH_BOTTOM_X;
@@ -77,6 +82,7 @@ void play() {
 	seaGullX = SEAGULL_BOTTOM_X;
 	crabX = SEAGULL_BOTTOM_X;
 	boosterX = BOOSTER_BOTTOM_X;
+	shieldX = SHIELD_BOTTOM_X;
 	score = 0;
 	keycontrol = 0;
 
@@ -91,6 +97,7 @@ void play() {
 	int seaGullspd = 4;
 	int crabspd = 4;
 	int boosterspd = 4;
+	int shieldspd = 4;
 	trapvalue = 0;
 	const int gravity = 2;
 
@@ -100,12 +107,14 @@ void play() {
 	while (true) {
 		gotoXY(0, 0);
 		background();
-		if (isCollision(boosterX, crabX, seaGullX, squidX, fishX, whaleY))
+		if (isCollision(shieldX, boosterX, crabX, seaGullX, squidX, fishX, whaleY))
 			break;
 
 		if (Getkeydown(VK_SPACE) && ownBooster == true) {
 			keycontrol++;
 			ownBooster = false;
+			shieldX = SHIELD_BOTTOM_X;
+			trapvalue = sfmt_genrand_uint32(&sfmt) % 20;
 			booster();
 			fishspd = 4;
 			squidspd = 4;
@@ -118,7 +127,7 @@ void play() {
 			keycontrol++;
 			isUp = true;
 		}
-		else if (Getkeydown(VK_DOWN) && whaleY < 26)
+		else if (Getkeydown(VK_DOWN) && whaleY < 26 && whaleY>13)
 		{
 			keycontrol++;
 			isDown = true;
@@ -139,7 +148,7 @@ void play() {
 				whaleY += gravity;
 			}
 		}
-		if (whaleY <= 0) {
+		if (whaleY <= 4) {
 			isJumping = false;
 			isBottom = true;
 		}
@@ -199,7 +208,16 @@ void play() {
 		squiddraw(squidX);
 		seaGulldraw(seaGullX);
 
-		if (trapvalue == 0 && ownBooster == false) {
+		if (trapvalue == 10 && ownShield == false) {
+			shielddraw(shieldX);
+			shieldX -= shieldspd;
+			if (shieldX <= -1 || ownShield == 1) {
+				shieldX = SHIELD_BOTTOM_X;
+				crabX = CRAB_BOTTOM_X;
+				trapvalue = sfmt_genrand_uint32(&sfmt) % 20;
+			}
+		}
+		else if (trapvalue == 0 && ownBooster == false) {
 			boosterDraw(boosterX);
 			boosterX -= boosterspd;
 			if (boosterX <= -1 || ownBooster == 1) {
@@ -233,17 +251,55 @@ void play() {
 
 	drawgameover(score);
 }
-int isCollision(const int boosterX, const int crabX, const int seaGullX, const int squidX, const int fishX, const int whaleY) {
-	if (boosterX <= 20 && boosterX >= 0 && whaleY >= 34)
-		ownBooster = true;
-	if (crabX <= 16 && crabX >= 0 && whaleY >= 34)
-		return true;
-	if (seaGullX <= 16 && seaGullX >= 0 && whaleY <= 3)
-		return true;
-	if (fishX <= 20 && fishX >= 0 && whaleY == 26)
-		return true;
-	if (squidX <= 20 && squidX >= 0 && whaleY == 14)
-		return true;
+int isCollision(const int ShieldX, const int BoosterX, const int CrabX, const int SeaGullX, const int SquidX, const int FishX, const int WhaleY) {
+	sfmt_t sfmt;
+	sfmt_init_gen_rand(&sfmt, time(NULL));
+
+	if (ownShield == true) {
+		if (BoosterX <= 20 && BoosterX >= 0 && WhaleY >= 34) {
+			ownBooster = true;
+			trapvalue = sfmt_genrand_uint32(&sfmt) % 20;
+		}
+		if (CrabX <= 16 && CrabX >= 0 && WhaleY >= 34) {
+			ownShield = false;
+			crabX = CRAB_BOTTOM_X;
+			return false;
+		}
+		if (SeaGullX <= 16 && SeaGullX >= 0 && WhaleY <= 5) {
+			ownShield = false;
+			seaGullX = SEAGULL_BOTTOM_X;
+			return false;
+		}
+		if (FishX <= 20 && FishX >= 0 && WhaleY == 26) {
+			ownShield = false;
+			fishX = FISH_BOTTOM_X;
+			return false;
+		}
+		if (SquidX <= 20 && SquidX >= 0 && WhaleY == 14) {
+			ownShield = false;
+			squidX = SQUID_BOTTOM_X;
+			return false;
+		}
+	}
+	else {
+		if (ShieldX <= 20 && ShieldX >= 0 && WhaleY >= 34) {
+			ownShield = true;
+			trapvalue = sfmt_genrand_uint32(&sfmt) % 20;
+			shieldX = SHIELD_BOTTOM_X;
+		}
+		if (BoosterX <= 20 && BoosterX >= 0 && WhaleY >= 34) {
+			ownBooster = true;
+			trapvalue = sfmt_genrand_uint32(&sfmt) % 20;
+		}
+		if (CrabX <= 16 && CrabX >= 0 && WhaleY >= 34)
+			return true;
+		if (SeaGullX <= 16 && SeaGullX >= 0 && WhaleY <= 5)
+			return true;
+		if (FishX <= 20 && FishX >= 0 && WhaleY == 26)
+			return true;
+		if (SquidX <= 20 && SquidX >= 0 && WhaleY == 14)
+			return true;
+	}
 	return false;
 }
 
@@ -362,61 +418,159 @@ void boosterDraw(int boosterX) {
 	printf("└───┘\n");
 }
 
+void shielddraw(int boosterX) {
+	textcolor(SkyBlue);
+	GotXY(shieldX, SHIELD_BOTTOM_Y);
+	printf("  ─-");
+	GotXY(shieldX, SHIELD_BOTTOM_Y + 1);
+	printf("| ★ |");
+	GotXY(shieldX, SHIELD_BOTTOM_Y + 2);
+	printf("  ─-\n");
+	textcolor(YELLOW);
+}
+
 void drawwhale(int whaleY) {
 	GotXY(0, whaleY);
 	static int legFlag = 0;
-	textcolor(WHITE);
-	if (legFlag < 3) {
-		printf("\n");
-		printf("\n");
-		printf("\n");
-		printf("\n");
-		printf("                      ( ´--)/\n");
-		legFlag++;
+	if (ownShield == true) {
+		textcolor(SkyBlue);
+		if (legFlag < 3) {
+			printf("\n");
+			printf("                          \n");
+			printf("           * |ㅡ┐   ┌ ㅡ|  ***\n");
+			printf("                  )  (           \n");
+			printf("                   ><              \n");
+			printf("                   ㅣ (´∵)/        \n");
+			printf("                  ■■■■■■■      \n");
+			printf("      ■  ■   _■              ■     \n");
+			printf("     ㅁ ㅁ    ■                 ■     \n");
+			printf("      ■     ■              0    ■   \n");
+			printf("     ■    ■      ┌──────────────■     \n");
+			printf("~~~@~~~~■@~■┬┬─┬─┤ | | | | | | ■\n");
+			printf("         ~  ~■^■~■^■@■~■~■/@@@/~ \n");
+			legFlag++;
+		}
+		else if (legFlag < 5) {
+			printf("\n");
+			printf("                          \n");
+			printf("           * |ㅡ┐   ┌ ㅡ|  ***\n");
+			printf("        *         )  (          *\n");
+			printf("                   ><             \n");
+			printf("                   ㅣ (´∵)/       \n");
+			printf("                  ■■■■■■■      \n");
+			printf("      ■  ■   _■              ■     \n");
+			printf("     ㅁ ㅁ    ■                 ■     \n");
+			printf("      ■     ■              0    ■   \n");
+			printf("     ■    ■      ┌──────────────■     \n");
+			printf("~~~@~~~~■@~■┬┬─┬─┤ | | | | | | ■\n");
+			printf("         ~  ~■^■~■^■@■~■~■/@@@/~ \n");
+			legFlag++;
+		}
+		else if (legFlag < 7) {
+			printf("\n");
+			printf("                          \n");
+			printf("           * |ㅡ┐   ┌ ㅡ|  ***\n");
+			printf("        *         )  (          *\n");
+			printf("      *            ><             *\n");
+			printf("     *             ㅣ (´∵)/       *\n");
+			printf("                  ■■■■■■■      \n");
+			printf("      ■  ■   _■              ■     \n");
+			printf("     ㅁ ㅁ    ■                 ■     \n");
+			printf("      ■     ■              0    ■   \n");
+			printf("     ■    ■      ┌──────────────■     \n");
+			printf("~~~@~~~~■@~■┬┬─┬─┤ | | | | | | ■\n");
+			printf("         ~  ~■^■~■^■@■~■~■/@@@/~ \n");
+			legFlag++;
+		}
+		else if (legFlag < 9) {
+			printf("\n");
+			printf("                          \n");
+			printf("           * |ㅡ┐   ┌ ㅡ|  ***\n");
+			printf("        *         )  (          *\n");
+			printf("      *            ><             *\n");
+			printf("     *             ㅣ (´∵)/       *\n");
+			printf("    *             ■■■■■■■     *\n");
+			printf("   *  ■  ■   _■              ■    *\n");
+			printf("     ㅁ ㅁ    ■                 ■     \n");
+			printf("      ■     ■              0    ■   \n");
+			printf("     ■    ■      ┌──────────────■   \n");
+			printf("~~~@~~~~■@~■┬┬─┬─┤ | | | | | | ■\n");
+			printf("         ~  ~■^■~■^■@■~■~■/@@@/~ \n");
+			legFlag++;
+		}
+		else
+		{
+			printf("\n");
+			printf("                          \n");
+			printf("           * |ㅡ┐   ┌ ㅡ|  ***\n");
+			printf("        *         )  (          *\n");
+			printf("      *            ><             *\n");
+			printf("     *             ㅣ (´∵)/       *\n");
+			printf("    *             ■■■■■■■     *\n");
+			printf("   *  ■  ■   _■              ■    *\n");
+			printf("   * ㅁ ㅁ    ■                 ■    *\n");
+			printf("   *  ■     ■              0    ■   *\n");
+			printf("   ` ■    ■      ┌──────────────■   *\n");
+			printf("~~~@~~~~■@~■┬┬─┬─┤ | | | | | | ■\n");
+			printf("         ~  ~■^■~■^■@■~■~■/@@@/~ \n");
+			legFlag = 0;
+		}
+		textcolor(YELLOW);
 	}
-	else if (legFlag < 5) {
-		printf("\n");
-		printf("\n");
-		printf("\n");
-		printf("                   ><\n");
-		printf("                   ㅣ( ´--)`\n");
-		legFlag++;
-	}
-	else if (legFlag < 7) {
-		printf("\n");
-		printf("\n");
-		printf("                  )  (\n");
-		printf("                   ><\n");
-		printf("                   ㅣ( ´--)`\n");
-		legFlag++;
-	}
-	else if (legFlag < 9) {
-		printf("\n");
-		printf("             |ㅡ┐   ┌ㅡ|\n");
-		printf("                  )  (\n");
-		printf("                   ><\n");
-		printf("                   ㅣ( ´--)`\n");
-		legFlag++;
-	}
-	else
-	{
-		printf("      -  = ㅡ ┐  |||  ┌ ㅡ =  -\n");
-		printf("             |ㅡ┐   ┌ㅡ|\n");
-		printf("                  )  (\n");
-		printf("                   ><\n");
-		printf("                   ㅣ( ´--)`\n");
-		legFlag = 0;
-	}
+	else {
+		textcolor(WHITE);
+		if (legFlag < 3) {
+			printf("\n");
+			printf("\n");
+			printf("\n");
+			printf("\n");
+			printf("                      ( ´--)/\n");
+			legFlag++;
+		}
+		else if (legFlag < 5) {
+			printf("\n");
+			printf("\n");
+			printf("\n");
+			printf("                   ><\n");
+			printf("                   ㅣ( ´--)`\n");
+			legFlag++;
+		}
+		else if (legFlag < 7) {
+			printf("\n");
+			printf("\n");
+			printf("                  )  (\n");
+			printf("                   ><\n");
+			printf("                   ㅣ( ´--)`\n");
+			legFlag++;
+		}
+		else if (legFlag < 9) {
+			printf("\n");
+			printf("             |ㅡ┐   ┌ㅡ|\n");
+			printf("                  )  (\n");
+			printf("                   ><\n");
+			printf("                   ㅣ( ´--)`\n");
+			legFlag++;
+		}
+		else
+		{
+			printf("      -  = ㅡ ┐  |||  ┌ ㅡ =  -\n");
+			printf("             |ㅡ┐   ┌ㅡ|\n");
+			printf("                  )  (\n");
+			printf("                   ><\n");
+			printf("                   ㅣ( ´--)`\n");
+			legFlag = 0;
+		}
 
-	textcolor(SkyBlue);
-	printf("                 ■■■■■■■\n");
-	printf("    ■  ■     ■              ■\n");
-	printf("    ㅁ ㅁ     ■                 ■\n");
-	printf("      ■     ■              0    ■\n");
-	printf("     ■     ■      ┌─────────────■\n");
-	printf("~~~@~~~~■@~■┬┬─┬─┤ | | | | | | ■\n");
-	printf("         ~  ~■^■~■^■@■~■~■/@@@/~~~ \n");
-	textcolor(YELLOW);
+		textcolor(SkyBlue);
+		printf("                 ■■■■■■■\n");
+		printf("    ■  ■     ■              ■\n");
+		printf("    ㅁ ㅁ     ■                 ■\n");
+		printf("      ■     ■              0    ■\n");
+		printf("     ■     ■      ┌─────────────■\n");
+		printf("~~~@~~~~■@~■┬┬─┬─┤ | | | | | | ■\n");
+		printf("         ~  ~■^■~■^■@■~■~■/@@@/~~~ \n");
+		textcolor(YELLOW);
+	}
 }
 void GotXY(int x, int y) {
 	COORD Pos;
@@ -432,15 +586,13 @@ void background() {
 	textcolor(BLUE);
 	static int num = 0;
 	if (num < 10) {
-		gotoXY(0, 10);
-		printf("\n");
+		gotoXY(0, 22);
 		printf("      (***********(@┱__           (*********(@┱__            (********(@┱__      (***********(@┱__           (*********(@┱__            (********(@┱__           (*********(@┱__            (****\n");
 		printf("~~~~~~~`             ``````~~~~~~~`           `````~~~~~~~~~~`          ````~~~~~~~`             ``````~~~~~~~`           `````~~~~~~~~~~`          ````~~~~~~~`           `````~~~~~~~~~~`          \n");
 		num++;
 	}
 	else if (num >= 10) {
-		gotoXY(0, 10);
-		printf("\n");
+		gotoXY(0, 22);
 		printf("~~~~~~~`             ``````~~~~~~~`           `````~~~~~~~~~~`          ````~~~~~~~`             ``````~~~~~~~`           `````~~~~~~~~~~`          ````~~~~~~~`           `````~~~~~~~~~~`          \n");
 		printf("      (***********(@┱__           (*********(@┱__            (********(@┱__      (***********(@┱__           (*********(@┱__            (********(@┱__           (*********(@┱__            (****\n");
 		num++;
@@ -449,3 +601,4 @@ void background() {
 		num = 0;
 	textcolor(YELLOW);
 }
+
