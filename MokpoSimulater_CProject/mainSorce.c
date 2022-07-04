@@ -115,7 +115,7 @@ void maindraw() {
 			botton = 1;
 		}
 
-		if (Getkeydown(VK_SPACE) && botton) {
+		if (Getkeydown(VK_SPACE) && botton) {	
 			map();
 		}
 		else if (Getkeydown(VK_SPACE) && !botton) {
