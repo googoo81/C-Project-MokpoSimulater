@@ -15,11 +15,14 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="mainSorce.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="SFMT.c">
       <Filter>헤더 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="mainSource.h">
+      <Filter>헤더 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="intro.c">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -90,6 +93,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="SFMT-alti.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="explainHeader.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

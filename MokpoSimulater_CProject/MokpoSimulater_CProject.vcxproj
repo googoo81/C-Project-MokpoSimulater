@@ -139,12 +139,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="mainSorce.c" />
+    <ClCompile Include="intro.c" />
+    <ClCompile Include="mainSource.h" />
     <ClCompile Include="SFMT.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="boosterHeader.h" />
     <ClInclude Include="exitHeader.h" />
+    <ClInclude Include="explainHeader.h" />
     <ClInclude Include="mainHeader.h" />
     <ClInclude Include="mapHeader.h" />
     <ClInclude Include="SFMT-alti.h" />

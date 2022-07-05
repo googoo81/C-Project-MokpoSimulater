@@ -157,6 +157,8 @@ void map() {
 		}
 
 		if (num == 0 && Getkeydown(VK_SPACE)) {
+			PlaySound(TEXT("AHN_YEEUN_____Sailing____Violin_Cover"), NULL, SND_ASYNC | SND_LOOP);
+			easynormalhard = 0;
 			play();
 			break;
 		}
@@ -165,19 +167,13 @@ void map() {
 			break;
 		}
 		else if (num == 2 && Getkeydown(VK_SPACE)) {
-			system("cls");
-			gotoXY(93, 25);
-			printf("구현 X");
-			Sleep(1000);
-			system("cls");
+			easynormalhard = 2;
+			play();
 			break;
 		}
 		else if (num == 3 && Getkeydown(VK_SPACE)) {
-			system("cls");
-			gotoXY(93, 25);
-			printf("구현 X");
-			Sleep(1000);
-			system("cls");
+			easynormalhard = 1;
+			play();
 			break;
 		}
 		Sleep(100);

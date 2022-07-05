@@ -104,149 +104,443 @@ void play() {
 	clock_t start, curr;
 	start = clock();
 
-	while (true) {
-		gotoXY(0, 0);
-		background();
-		if (isCollision(shieldX, boosterX, crabX, seaGullX, squidX, fishX, whaleY))
-			break;
+	if (easynormalhard == 0) {
+		while (true) {
+			gotoXY(0, 0);
+			background();
+			if (isCollision(shieldX, boosterX, crabX, seaGullX, squidX, fishX, whaleY))
+				break;
 
-		if (Getkeydown(VK_SPACE) && ownBooster == true) {
-			keycontrol++;
-			ownBooster = false;
-			shieldX = SHIELD_BOTTOM_X;
-			trapvalue = sfmt_genrand_uint32(&sfmt) % 20;
-			booster();
-			fishspd = 4;
-			squidspd = 4;
-			seaGullspd = 4;
-			crabspd = 4;
-		}
-
-		if (Getkeydown(VK_UP) && isUp == false && whaleY > 14 && whaleY == 26 && isDown == false && isDiving != true)
-		{
-			keycontrol++;
-			isUp = true;
-		}
-		else if (Getkeydown(VK_DOWN) && whaleY < 26 && whaleY>13)
-		{
-			keycontrol++;
-			isDown = true;
-		}
-
-		if (whaleY <= 14) {
-			if (Getkeydown(VK_UP) && whaleY == 14 && !isJumping) {
+			if (Getkeydown(VK_SPACE) && ownBooster == true) {
 				keycontrol++;
-				isJumping = true;
-				isBottom = false;
-			}
-			if (isJumping)
-			{
-				whaleY -= gravity;
-			}
-			else if (whaleY < 14 && !isJumping)
-			{
-				whaleY += gravity;
-			}
-		}
-		if (whaleY <= 4) {
-			isJumping = false;
-			isBottom = true;
-		}
-
-		if (whaleY >= 26) {
-			if (Getkeydown(VK_DOWN) && whaleY == 26) {
-				keycontrol++;
-				isDiving = true;
-				isTop = false;
-			}
-			if (isDiving) {
-				whaleY += gravity;
-			}
-			else if (whaleY > 26 && !isDiving) {
-				whaleY -= gravity;
-			}
-		}
-		if (whaleY >= 36) {
-			isDiving = false;
-			isTop = true;
-		}
-
-		if (isUp)
-			whaleY -= gravity;
-		else if (isDown)
-			whaleY += gravity;
-
-		if (whaleY >= WHALE_BOTTOM_Y && isDown)
-		{
-			whaleY = WHALE_BOTTOM_Y;
-			isDown = false;
-		}
-
-		if (whaleY <= 14)
-			isUp = false;
-		fishX -= fishspd;;
-		if (fishX <= -1) {
-			fishspd = sfmt_genrand_uint32(&sfmt) % 5 + 4;
-			fishX = FISH_BOTTOM_X;
-		}
-
-		squidX -= squidspd;
-		if (squidX <= -1) {
-			squidspd = sfmt_genrand_uint32(&sfmt) % 5 + 4;
-			squidX = SQUID_BOTTOM_X;
-		}
-
-		seaGullX -= seaGullspd;
-		if (seaGullX <= -1) {
-			seaGullspd = sfmt_genrand_uint32(&sfmt) % 5 + 4;
-			seaGullX = SEAGULL_BOTTOM_X;
-		}
-
-		itemBox();
-		drawwhale(whaleY);
-		fishdraw(fishX);
-		squiddraw(squidX);
-		seaGulldraw(seaGullX);
-
-		if (trapvalue == 10 && ownShield == false) {
-			shielddraw(shieldX);
-			shieldX -= shieldspd;
-			if (shieldX <= -1 || ownShield == 1) {
+				ownBooster = false;
 				shieldX = SHIELD_BOTTOM_X;
-				crabX = CRAB_BOTTOM_X;
 				trapvalue = sfmt_genrand_uint32(&sfmt) % 20;
+				booster();
+				fishspd = 4;
+				squidspd = 4;
+				seaGullspd = 4;
+				crabspd = 4;
 			}
-		}
-		else if (trapvalue == 0 && ownBooster == false) {
-			boosterDraw(boosterX);
-			boosterX -= boosterspd;
-			if (boosterX <= -1 || ownBooster == 1) {
-				boosterX = BOOSTER_BOTTOM_X;
-				crabX = CRAB_BOTTOM_X;
-				trapvalue = sfmt_genrand_uint32(&sfmt) % 20;
-			}
-		}
-		else {
-			crabDraw(crabX);
-			crabX -= crabspd;
-			if (crabX <= -1) {
-				crabspd = sfmt_genrand_uint32(&sfmt) % 5 + 4;
-				crabX = CRAB_BOTTOM_X;
-				boosterX = BOOSTER_BOTTOM_X;
-				trapvalue = sfmt_genrand_uint32(&sfmt) % 20;
-			}
-		}
 
-		curr = clock();
-		if (((curr - start) / CLOCKS_PER_SEC) >= 0) {
-			score++;
-			start = clock();
-		}
-		Sleep(60);
-		system("cls");
+			if (Getkeydown(VK_UP) && isUp == false && whaleY > 14 && whaleY == 26 && isDown == false && isDiving != true)
+			{
+				keycontrol++;
+				isUp = true;
+			}
+			else if (Getkeydown(VK_DOWN) && whaleY < 26 && whaleY>13)
+			{
+				keycontrol++;
+				isDown = true;
+			}
 
-		GotXY(10, 0);
-		printf("Score : %d, keyClick : %d", score, keycontrol);
+			if (whaleY <= 14) {
+				if (Getkeydown(VK_UP) && whaleY == 14 && !isJumping) {
+					keycontrol++;
+					isJumping = true;
+					isBottom = false;
+				}
+				if (isJumping)
+				{
+					whaleY -= gravity;
+				}
+				else if (whaleY < 14 && !isJumping)
+				{
+					whaleY += gravity;
+				}
+			}
+			if (whaleY <= 4) {
+				isJumping = false;
+				isBottom = true;
+			}
+
+			if (whaleY >= 26) {
+				if (Getkeydown(VK_DOWN) && whaleY == 26) {
+					keycontrol++;
+					isDiving = true;
+					isTop = false;
+				}
+				if (isDiving) {
+					whaleY += gravity;
+				}
+				else if (whaleY > 26 && !isDiving) {
+					whaleY -= gravity;
+				}
+			}
+			if (whaleY >= 36) {
+				isDiving = false;
+				isTop = true;
+			}
+
+			if (isUp)
+				whaleY -= gravity;
+			else if (isDown)
+				whaleY += gravity;
+
+			if (whaleY >= WHALE_BOTTOM_Y && isDown)
+			{
+				whaleY = WHALE_BOTTOM_Y;
+				isDown = false;
+			}
+
+			if (whaleY <= 14)
+				isUp = false;
+			fishX -= fishspd;;
+			if (fishX <= -1) {
+				fishspd = sfmt_genrand_uint32(&sfmt) % 5 + 4;
+				fishX = FISH_BOTTOM_X;
+			}
+
+			squidX -= squidspd;
+			if (squidX <= -1) {
+				squidspd = sfmt_genrand_uint32(&sfmt) % 5 + 4;
+				squidX = SQUID_BOTTOM_X;
+			}
+
+			seaGullX -= seaGullspd;
+			if (seaGullX <= -1) {
+				seaGullspd = sfmt_genrand_uint32(&sfmt) % 5 + 4;
+				seaGullX = SEAGULL_BOTTOM_X;
+			}
+
+			itemBox();
+			drawwhale(whaleY);
+			fishdraw(fishX);
+			squiddraw(squidX);
+			seaGulldraw(seaGullX);
+
+			if ((trapvalue == 10 || trapvalue == 11) && ownShield == false) {
+				shielddraw(shieldX);
+				shieldX -= shieldspd;
+				if (shieldX <= -1 || ownShield == 1) {
+					shieldX = SHIELD_BOTTOM_X;
+					crabX = CRAB_BOTTOM_X;
+					trapvalue = sfmt_genrand_uint32(&sfmt) % 20;
+				}
+			}
+			else if ((trapvalue == 0 || trapvalue == 1) && ownBooster == false) {
+				boosterDraw(boosterX);
+				boosterX -= boosterspd;
+				if (boosterX <= -1 || ownBooster == 1) {
+					boosterX = BOOSTER_BOTTOM_X;
+					crabX = CRAB_BOTTOM_X;
+					trapvalue = sfmt_genrand_uint32(&sfmt) % 20;
+				}
+			}
+			else {
+				crabDraw(crabX);
+				crabX -= crabspd;
+				if (crabX <= -1) {
+					crabspd = sfmt_genrand_uint32(&sfmt) % 5 + 4;
+					crabX = CRAB_BOTTOM_X;
+					boosterX = BOOSTER_BOTTOM_X;
+					trapvalue = sfmt_genrand_uint32(&sfmt) % 20;
+				}
+			}
+
+			curr = clock();
+			if (((curr - start) / CLOCKS_PER_SEC) >= 0) {
+				score++;
+				start = clock();
+			}
+			Sleep(60);
+			system("cls");
+
+			GotXY(10, 0);
+			printf("Score : %d, keyClick : %d", score, keycontrol);
+		}
+	}
+	else if (easynormalhard == 1) {
+		while (true) {
+			gotoXY(0, 0);
+			background();
+			if (isCollision(shieldX, boosterX, crabX, seaGullX, squidX, fishX, whaleY))
+				break;
+
+			if (Getkeydown(VK_SPACE) && ownBooster == true) {
+				keycontrol++;
+				ownBooster = false;
+				shieldX = SHIELD_BOTTOM_X;
+				trapvalue = sfmt_genrand_uint32(&sfmt) % 100;
+				booster();
+				fishspd = 4;
+				squidspd = 4;
+				seaGullspd = 4;
+				crabspd = 4;
+			}
+
+			if (Getkeydown(VK_UP) && isUp == false && whaleY > 14 && whaleY == 26 && isDown == false && isDiving != true)
+			{
+				keycontrol++;
+				isUp = true;
+			}
+			else if (Getkeydown(VK_DOWN) && whaleY < 26 && whaleY>13)
+			{
+				keycontrol++;
+				isDown = true;
+			}
+
+			if (whaleY <= 14) {
+				if (Getkeydown(VK_UP) && whaleY == 14 && !isJumping) {
+					keycontrol++;
+					isJumping = true;
+					isBottom = false;
+				}
+				if (isJumping)
+				{
+					whaleY -= gravity;
+				}
+				else if (whaleY < 14 && !isJumping)
+				{
+					whaleY += gravity;
+				}
+			}
+			if (whaleY <= 4) {
+				isJumping = false;
+				isBottom = true;
+			}
+
+			if (whaleY >= 26) {
+				if (Getkeydown(VK_DOWN) && whaleY == 26) {
+					keycontrol++;
+					isDiving = true;
+					isTop = false;
+				}
+				if (isDiving) {
+					whaleY += gravity;
+				}
+				else if (whaleY > 26 && !isDiving) {
+					whaleY -= gravity;
+				}
+			}
+			if (whaleY >= 36) {
+				isDiving = false;
+				isTop = true;
+			}
+
+			if (isUp)
+				whaleY -= gravity;
+			else if (isDown)
+				whaleY += gravity;
+
+			if (whaleY >= WHALE_BOTTOM_Y && isDown)
+			{
+				whaleY = WHALE_BOTTOM_Y;
+				isDown = false;
+			}
+
+			if (whaleY <= 14)
+				isUp = false;
+			fishX -= fishspd;;
+			if (fishX <= -1) {
+				fishspd = sfmt_genrand_uint32(&sfmt) % 5 + 4;
+				fishX = FISH_BOTTOM_X;
+			}
+
+			squidX -= squidspd;
+			if (squidX <= -1) {
+				squidspd = sfmt_genrand_uint32(&sfmt) % 5 + 4;
+				squidX = SQUID_BOTTOM_X;
+			}
+
+			seaGullX -= seaGullspd;
+			if (seaGullX <= -1) {
+				seaGullspd = sfmt_genrand_uint32(&sfmt) % 5 + 4;
+				seaGullX = SEAGULL_BOTTOM_X;
+			}
+
+			itemBox();
+			drawwhale(whaleY);
+			fishdraw(fishX);
+			squiddraw(squidX);
+			seaGulldraw(seaGullX);
+
+			if (trapvalue == 10 && ownShield == false) {
+				shielddraw(shieldX);
+				shieldX -= shieldspd;
+				if (shieldX <= -1 || ownShield == 1) {
+					shieldX = SHIELD_BOTTOM_X;
+					crabX = CRAB_BOTTOM_X;
+					trapvalue = sfmt_genrand_uint32(&sfmt) % 100;
+				}
+			}
+			else if (trapvalue == 1 && ownBooster == false) {
+				boosterDraw(boosterX);
+				boosterX -= boosterspd;
+				if (boosterX <= -1 || ownBooster == 1) {
+					boosterX = BOOSTER_BOTTOM_X;
+					crabX = CRAB_BOTTOM_X;
+					trapvalue = sfmt_genrand_uint32(&sfmt) % 100;
+				}
+			}
+			else {
+				crabDraw(crabX);
+				crabX -= crabspd;
+				if (crabX <= -1) {
+					crabspd = sfmt_genrand_uint32(&sfmt) % 5 + 4;
+					crabX = CRAB_BOTTOM_X;
+					boosterX = BOOSTER_BOTTOM_X;
+					trapvalue = sfmt_genrand_uint32(&sfmt) % 100;
+				}
+			}
+
+			curr = clock();
+			if (((curr - start) / CLOCKS_PER_SEC) >= 0) {
+				score++;
+				start = clock();
+			}
+			Sleep(45);
+			system("cls");
+
+			GotXY(10, 0);
+			printf("Score : %d, keyClick : %d", score, keycontrol);
+		}
+	}
+	else if (easynormalhard == 2) {
+		while (true) {
+			gotoXY(0, 0);
+			background();
+			if (isCollision(shieldX, boosterX, crabX, seaGullX, squidX, fishX, whaleY))
+				break;
+
+			if (Getkeydown(VK_SPACE) && ownBooster == true) {
+				keycontrol++;
+				ownBooster = false;
+				shieldX = SHIELD_BOTTOM_X;
+				trapvalue = sfmt_genrand_uint32(&sfmt) % 20;
+				booster();
+				fishspd = 4;
+				squidspd = 4;
+				seaGullspd = 4;
+				crabspd = 4;
+			}
+
+			if (Getkeydown(VK_UP) && isUp == false && whaleY > 14 && whaleY == 26 && isDown == false && isDiving != true)
+			{
+				keycontrol++;
+				isUp = true;
+			}
+			else if (Getkeydown(VK_DOWN) && whaleY < 26 && whaleY>13)
+			{
+				keycontrol++;
+				isDown = true;
+			}
+
+			if (whaleY <= 14) {
+				if (Getkeydown(VK_UP) && whaleY == 14 && !isJumping) {
+					keycontrol++;
+					isJumping = true;
+					isBottom = false;
+				}
+				if (isJumping)
+				{
+					whaleY -= gravity;
+				}
+				else if (whaleY < 14 && !isJumping)
+				{
+					whaleY += gravity;
+				}
+			}
+			if (whaleY <= 4) {
+				isJumping = false;
+				isBottom = true;
+			}
+
+			if (whaleY >= 26) {
+				if (Getkeydown(VK_DOWN) && whaleY == 26) {
+					keycontrol++;
+					isDiving = true;
+					isTop = false;
+				}
+				if (isDiving) {
+					whaleY += gravity;
+				}
+				else if (whaleY > 26 && !isDiving) {
+					whaleY -= gravity;
+				}
+			}
+			if (whaleY >= 36) {
+				isDiving = false;
+				isTop = true;
+			}
+
+			if (isUp)
+				whaleY -= gravity;
+			else if (isDown)
+				whaleY += gravity;
+
+			if (whaleY >= WHALE_BOTTOM_Y && isDown)
+			{
+				whaleY = WHALE_BOTTOM_Y;
+				isDown = false;
+			}
+
+			if (whaleY <= 14)
+				isUp = false;
+			fishX -= fishspd;;
+			if (fishX <= -1) {
+				fishspd = sfmt_genrand_uint32(&sfmt) % 5 + 4;
+				fishX = FISH_BOTTOM_X;
+			}
+
+			squidX -= squidspd;
+			if (squidX <= -1) {
+				squidspd = sfmt_genrand_uint32(&sfmt) % 5 + 4;
+				squidX = SQUID_BOTTOM_X;
+			}
+
+			seaGullX -= seaGullspd;
+			if (seaGullX <= -1) {
+				seaGullspd = sfmt_genrand_uint32(&sfmt) % 5 + 4;
+				seaGullX = SEAGULL_BOTTOM_X;
+			}
+
+			itemBox();
+			drawwhale(whaleY);
+			fishdraw(fishX);
+			squiddraw(squidX);
+			seaGulldraw(seaGullX);
+
+			if (trapvalue == 10 && ownShield == false) {
+				shielddraw(shieldX);
+				shieldX -= shieldspd;
+				if (shieldX <= -1 || ownShield == 1) {
+					shieldX = SHIELD_BOTTOM_X;
+					crabX = CRAB_BOTTOM_X;
+					trapvalue = sfmt_genrand_uint32(&sfmt) % 20;
+				}
+			}
+			else if (trapvalue == 0 && ownBooster == false) {
+				boosterDraw(boosterX);
+				boosterX -= boosterspd;
+				if (boosterX <= -1 || ownBooster == 1) {
+					boosterX = BOOSTER_BOTTOM_X;
+					crabX = CRAB_BOTTOM_X;
+					trapvalue = sfmt_genrand_uint32(&sfmt) % 20;
+				}
+			}
+			else {
+				crabDraw(crabX);
+				crabX -= crabspd;
+				if (crabX <= -1) {
+					crabspd = sfmt_genrand_uint32(&sfmt) % 5 + 4;
+					crabX = CRAB_BOTTOM_X;
+					boosterX = BOOSTER_BOTTOM_X;
+					trapvalue = sfmt_genrand_uint32(&sfmt) % 20;
+				}
+			}
+
+			curr = clock();
+			if (((curr - start) / CLOCKS_PER_SEC) >= 0) {
+				score++;
+				start = clock();
+			}
+			Sleep(30);
+			system("cls");
+
+			GotXY(10, 0);
+			printf("Score : %d, keyClick : %d", score, keycontrol);
+		}
 	}
 
 	drawgameover(score);
@@ -345,6 +639,7 @@ void drawgameover(int score) {
 		}
 
 		if (Getkeydown(VK_SPACE) && botton) {
+			PlaySound(TEXT("Contaminated_Sea_____MapleStory.wav"), NULL, SND_ASYNC | SND_LOOP);
 			break;
 		}
 		else if (Getkeydown(VK_SPACE) && !botton) {
@@ -580,7 +875,7 @@ void GotXY(int x, int y) {
 }
 void consolesize() {
 	system("mode con cols=200 lines=50");
-	system("title Google Dinosaurs. By BlockDMask");
+	system("title Google Dinosaurs. By BlockDMask");
 }
 void background() {
 	textcolor(BLUE);
@@ -601,4 +896,3 @@ void background() {
 		num = 0;
 	textcolor(YELLOW);
 }
-

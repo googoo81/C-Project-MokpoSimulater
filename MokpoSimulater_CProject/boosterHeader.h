@@ -31,13 +31,17 @@ int squidX;
 int seaGullX;
 int crabX;
 int boosterX;
+int boosterX2;
 int shieldX;
+int shieldX2;
 int score;
 int keycontrol;
 int trapvalue;
 
 int ownBooster = false;
 int ownShield = false;
+
+int easynormalhard;
 
 void consolesize();
 int isCollision(const int seaGullX, const int squidX, const int fishX, const int dinoY);
@@ -207,7 +211,7 @@ void drawInvinCibilityWhale(int dinoY) {
 		printf("\n");
 		printf("\n");
 		printf("                   ><\n");
-		printf("                   太( ╞--)`\n");
+		printf("                   太( ╞--)\n");
 		legFlag++;
 	}
 	else if (legFlag < 7) {
@@ -215,7 +219,7 @@ void drawInvinCibilityWhale(int dinoY) {
 		printf("\n");;
 		printf("                  )  (\n");
 		printf("                   ><\n");
-		printf("                   太( ╞--)`\n");
+		printf("                   太( ╞--)\n");
 		legFlag++;
 	}
 	else if (legFlag < 9) {
@@ -223,7 +227,7 @@ void drawInvinCibilityWhale(int dinoY) {
 		printf("             |天忖   忙天|\n");
 		printf("                  )  (\n");
 		printf("                   ><\n");
-		printf("                   太( ╞--)`\n");
+		printf("                   太( ╞--)\n");
 		legFlag++;
 	}
 	else
@@ -232,7 +236,7 @@ void drawInvinCibilityWhale(int dinoY) {
 		printf("             |天忖   忙天|\n");
 		printf("                  )  (\n");
 		printf("                   ><\n");
-		printf("                   太( ╞--)`\n");
+		printf("                   太( ╞--)\n");
 		legFlag = 0;
 	}
 
@@ -241,7 +245,7 @@ void drawInvinCibilityWhale(int dinoY) {
 	printf("     仃 仃  = ﹥                  ﹥\n");
 	printf("       ﹥    ﹥              _0    ﹥\n");
 	printf("       ﹥   ﹥      忙式式式式式式式式式式式式式﹥\n");
-	printf("~~~@~~~~﹥@~﹥成成式成式扣 | | | | | | ﹥\n");
-	printf("         ~  ~﹥^﹥~﹥^﹥@﹥~﹥~﹥~~~~/@@@/~~~~~ \n");
+	printf("~@﹥@~﹥   ﹥成成式成式成扣 | | | | | | ﹥\n");
+	printf("         ~  ~﹥^﹥~﹥^﹥@﹥~﹥~﹥/@@@/~~~ \n");
 	textcolor(14);
 }
