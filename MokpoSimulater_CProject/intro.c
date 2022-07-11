@@ -1,7 +1,64 @@
 #include<stdio.h>
 #include"mainSource.h"
 
+void HideCursor(int hiding);
 
+static HANDLE hBuffer[2];
+int nScreenIndex;
+int MAP_X_MAX;
+int MAP_Y_MAX;
+
+void CreatBuffer()
+{
+	COORD size = { MAP_X_MAX ,  MAP_Y_MAX };
+	CONSOLE_CURSOR_INFO cci;
+	SMALL_RECT rect;
+	rect.Bottom = 0;
+	rect.Left = 0;
+	rect.Right = MAP_X_MAX - 1;;
+	rect.Top = MAP_Y_MAX - 1;
+
+	hBuffer[0] = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
+	SetConsoleScreenBufferSize(hBuffer[0], size);
+	SetConsoleWindowInfo(hBuffer[0], TRUE, &rect);
+
+	hBuffer[1] = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
+	SetConsoleScreenBufferSize(hBuffer[1], size);
+	SetConsoleWindowInfo(hBuffer[1], TRUE, &rect);
+
+	cci.dwSize = 1;
+	cci.bVisible = FALSE;
+	SetConsoleCursorInfo(hBuffer[0], &cci);
+	SetConsoleCursorInfo(hBuffer[1], &cci);
+}
+
+void WriteBuffer(int x, int y, char str[])
+{
+	DWORD dw;
+	COORD CursorPosition = { x, y };
+	SetConsoleCursorPosition(hBuffer[nScreenIndex], CursorPosition);
+	WriteFile(hBuffer[nScreenIndex], str, strlen(str), &dw, NULL);
+}
+
+void FlippingBuffer()	
+{
+	SetConsoleActiveScreenBuffer(hBuffer[nScreenIndex]);
+	nScreenIndex = !nScreenIndex;
+}
+
+void ClearBuffer()
+{
+	COORD Coor = { 0,0 };
+	DWORD dw;
+	FillConsoleOutputCharacter(hBuffer[nScreenIndex], ' ', MAP_X_MAX * MAP_Y_MAX, Coor, &dw);
+
+}
+
+void DeleteBuffer()
+{
+	CloseHandle(hBuffer[0]);
+	CloseHandle(hBuffer[1]);
+}
 
 int main() {
 	while (1) {
@@ -28,7 +85,7 @@ int main() {
 	printf("                                                                                ,.::\"	\n");
 	Sleep(30);
 	printf("\n");
-	Sleep(30);
+	Sleep(30); 
 	printf("\n");
 	Sleep(30);
 	printf("\n");
@@ -563,9 +620,26 @@ int main() {
 	Sleep(30);
 	printf("시작하려면 스페이스바를 눌러주세요");
 
+	HideCursor(1);
+
 	while (1) {
 		if (Getkeydown(VK_SPACE)) {
 			maindraw();
 		}
 	}
+}
+
+void HideCursor(int hiding)                                       //커서를 숨기거나 보이게 함
+{
+	CONSOLE_CURSOR_INFO cursor;
+	if (hiding == 0) {
+		cursor.bVisible = TRUE;
+		cursor.dwSize = 1;
+	}
+	else if (hiding == 1) {
+		cursor.bVisible = FALSE;
+		cursor.dwSize = sizeof(cursor);
+	}
+	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleCursorInfo(handle, &cursor);
 }
