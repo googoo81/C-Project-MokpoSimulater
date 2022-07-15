@@ -5,6 +5,7 @@
 #include<time.h>
 #include<stdlib.h>
 #include"boosterHeader.h"
+#include"endingHeader.h"
 
 enum ColorType {
 	BLACK,  	//0
@@ -39,7 +40,7 @@ enum ColorType {
 #define SHIELD_BOTTOM_Y 46
 #define SHIELD_BOTTOM_X 85
 
-
+void HideCursor(int hiding);
 void consolesize();
 int isCollision(const int shieldX, const int boosterX, const int crabX, const int seaGullX, const int squidX, const int fishX, const int whaleY);
 void drawgameover(int score);
@@ -236,6 +237,25 @@ void play() {
 					boosterX = BOOSTER_BOTTOM_X;
 					trapvalue = sfmt_genrand_uint32(&sfmt) % 20;
 				}
+			}
+
+			if (score == 3000 && booster_cnt >= 5 && ownShield == 1) {
+				system("cls");
+				trueEnding = 1;
+				trueEndingDraw();
+				return;
+			}
+			else if (score == 3000 && booster_cnt >= 5) {
+				happyEnding = 1;
+				system("cls");
+				happyEndingDraw();
+				return;
+			}
+			else if (score == 3000) {
+				badEnding = 1;
+				system("cls");
+				badEndingDraw();
+				return;
 			}
 
 			curr = clock();
@@ -510,7 +530,7 @@ void play() {
 					trapvalue = sfmt_genrand_uint32(&sfmt) % 20;
 				}
 			}
-			else if (trapvalue == 0 && ownBooster == false) {
+			else if (trapvalue == 1 && ownBooster == false) {
 				boosterDraw(boosterX);
 				boosterX -= boosterspd;
 				if (boosterX <= -1 || ownBooster == 1) {
@@ -877,6 +897,20 @@ void consolesize() {
 	system("mode con cols=200 lines=50");
 	system("title Google Dinosaurs. By BlockDMask");
 }
+void HideCursor(int hiding)
+{
+	CONSOLE_CURSOR_INFO cursor;
+	if (hiding == 0) {
+		cursor.bVisible = TRUE;
+		cursor.dwSize = 1;
+	}
+	else if (hiding == 1) {
+		cursor.bVisible = FALSE;
+		cursor.dwSize = sizeof(cursor);
+	}
+	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleCursorInfo(handle, &cursor);
+}
 void background() {
 	textcolor(BLUE);
 	static int num = 0;
@@ -896,3 +930,4 @@ void background() {
 		num = 0;
 	textcolor(YELLOW);
 }
+

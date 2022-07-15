@@ -1,12 +1,12 @@
 #include<stdio.h>
 #include"mainSource.h"
 
-void HideCursor(int hiding);
-
 static HANDLE hBuffer[2];
 int nScreenIndex;
 int MAP_X_MAX;
 int MAP_Y_MAX;
+
+void HideCursor(int hiding);
 
 void CreatBuffer()
 {
@@ -40,7 +40,7 @@ void WriteBuffer(int x, int y, char str[])
 	WriteFile(hBuffer[nScreenIndex], str, strlen(str), &dw, NULL);
 }
 
-void FlippingBuffer()	
+void FlippingBuffer()
 {
 	SetConsoleActiveScreenBuffer(hBuffer[nScreenIndex]);
 	nScreenIndex = !nScreenIndex;
@@ -61,9 +61,14 @@ void DeleteBuffer()
 }
 
 int main() {
+	printf("시작하려면 스페이스바를 인트로를 스킵하려면 탭을 눌러주십시오.");
 	while (1) {
 		if (Getkeydown(VK_SPACE)) {
+			system("cls");
 			break;
+		}
+		else if (Getkeydown(VK_TAB)) {
+			maindraw();
 		}
 	}
 	PlaySound(TEXT("OST_Pirates_of_the_Caribbean_Hes_A_Pirate_-_Hans_Zimmer2017"), NULL, SND_ASYNC | SND_LOOP);
@@ -85,7 +90,7 @@ int main() {
 	printf("                                                                                ,.::\"	\n");
 	Sleep(30);
 	printf("\n");
-	Sleep(30); 
+	Sleep(30);
 	printf("\n");
 	Sleep(30);
 	printf("\n");
@@ -257,7 +262,7 @@ int main() {
 	Sleep(30);
 	printf(".");
 
-	Sleep(2000);
+	Sleep(4000);
 	system("cls");
 
 	textcolor(darkSkyBlue);
@@ -461,7 +466,7 @@ int main() {
 	Sleep(30);
 	printf("!");
 
-	Sleep(2000);
+	Sleep(4000);
 	system("cls");
 
 	textcolor(SkyBlue);
@@ -620,13 +625,12 @@ int main() {
 	Sleep(30);
 	printf("시작하려면 스페이스바를 눌러주세요");
 
-	HideCursor(1);
-
 	while (1) {
 		if (Getkeydown(VK_SPACE)) {
 			maindraw();
 		}
 	}
+
 }
 
 void HideCursor(int hiding)                                       //커서를 숨기거나 보이게 함

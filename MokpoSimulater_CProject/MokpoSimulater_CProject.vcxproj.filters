@@ -98,5 +98,8 @@
     <ClInclude Include="explainHeader.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="endingHeader.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

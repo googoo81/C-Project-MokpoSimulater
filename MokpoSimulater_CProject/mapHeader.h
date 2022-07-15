@@ -62,7 +62,7 @@ void map() {
 	printf("					\t@@            ,..,@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
 	printf("					\t@@@@@---,,, @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
 	printf("					    ¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶\n");
-		printf("↑ ↓ 방향키로 움직일 수 있음. 스페이스파로 목록 선택가능. ★의 갯수는 난이도를 나타냄.\n");
+	printf("				↑ ↓ 방향키로 움직일 수 있음. 스페이스파로 목록 선택가능. ★의 갯수는 난이도를 나타냄. (단. 등교하기만 엔딩이 존재함)\n");
 
 	Sleep(300);
 
@@ -169,13 +169,13 @@ void map() {
 		}
 		else if (num == 2 && Getkeydown(VK_SPACE)) {
 			PlaySound(TEXT("AHN_YEEUN_____Sailing____Violin_Cover"), NULL, SND_ASYNC | SND_LOOP);
-			easynormalhard = 2;
+			easynormalhard = 1;
 			play();
 			break;
 		}
 		else if (num == 3 && Getkeydown(VK_SPACE)) {
 			PlaySound(TEXT("AHN_YEEUN_____Sailing____Violin_Cover"), NULL, SND_ASYNC | SND_LOOP);
-			easynormalhard = 1;
+			easynormalhard = 2;
 			play();
 			break;
 		}

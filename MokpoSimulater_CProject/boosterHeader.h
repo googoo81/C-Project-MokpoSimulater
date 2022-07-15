@@ -37,6 +37,10 @@ int shieldX2;
 int score;
 int keycontrol;
 int trapvalue;
+int happyEnding;
+int	badEnding;
+int trueEnding;
+int booster_cnt;
 
 int ownBooster = false;
 int ownShield = false;
@@ -44,7 +48,6 @@ int ownShield = false;
 int easynormalhard;
 
 void consolesize();
-int isCollision(const int seaGullX, const int squidX, const int fishX, const int dinoY);
 void drawgameover(const int score);
 void GotXY(int x, int y);
 void background();
@@ -75,6 +78,7 @@ int booster() {
 
 	old_time = clock();
 	while (true) {
+		booster_cnt++;
 		background();
 
 		if (Getkeydown(VK_UP) && isUp == false && whaleY != 14 && isDown == false)
@@ -245,7 +249,7 @@ void drawInvinCibilityWhale(int dinoY) {
 	printf("     仃 仃  = ﹥                  ﹥\n");
 	printf("       ﹥    ﹥              _0    ﹥\n");
 	printf("       ﹥   ﹥      忙式式式式式式式式式式式式式﹥\n");
-	printf("~@﹥@~﹥   ﹥成成式成式成扣 | | | | | | ﹥\n");
+	printf("~@﹥@~﹥成成式成式扣 | | | | | | ﹥\n");
 	printf("         ~  ~﹥^﹥~﹥^﹥@﹥~﹥~﹥/@@@/~~~ \n");
 	textcolor(14);
 }
